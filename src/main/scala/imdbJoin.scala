@@ -11,89 +11,73 @@ import org.apache.spark.sql.types._
   */
 object imdbJoin {
 
-  def main(args: Array[String]) {
-    if (args.length < 4){
-      println("Usage: imdbJoin titlesBasic titlePrincipal actors")
-      System.exit(1)
-    }
+  def run() {
+    val titleSchema = StructType(
+        Array(
+          StructField("tconst", StringType),
+          StructField("primaryTitle", StringType),
+          StructField("startYear", StringType),
+          StructField("endYear", StringType)
+        ))
 
+      val artistTitleSchema = StructType(
+        Array(
+          StructField("nconst", StringType),
+          StructField("tconst", StringType)
+        ))
+
+      val  artistSchema = StructType(
+        Array(
+          StructField("nconst", StringType),
+          StructField("primaryName", StringType),
+          StructField("birthYear", StringType),
+          StructField("deathYear", StringType)
+        ))
     val spark = SparkSession
       .builder
       .master("local[*]")
       .appName("StructuredNetworkWordCount")
       .getOrCreate()
-    var tbSchema,tpSchema, actorSchema;
-    (tbSchema,tpSchema, actorSchema) = startSchemas()
 
-    val titlesBasicStream = spark
+     val titleStream = spark
+      .readStream
+      .option("header","true")
+      .option("sep", "\t").schema(titleSchema)
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles_small" )
+
+    val artistTitleStream = spark
       .readStream
       .option("header","true")
       .option("sep", "\t")
-      .schema(tbSchema)
-      .csv(args(1))
-
-    val titlesPrincipalStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(tpSchema)
-      .csv(args(2))
+      .schema(artistTitleSchema)
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title_small" )
 
     val actorStream = spark
       .readStream
       .option("header","true")
       .option("sep", "\t")
-      .schema(actorSchema)
-      .csv(args(3))
+      .schema(artistSchema)
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists_small" )
 
+//    actorStream.select("fooBar").map(_.
 
-    val query = titlesPrincipalStream
-      .join(titlesBasicStream,"tconst")
+    val query = titleStream
+      .join(artistTitleStream,"tconst")
       .join(actorStream,"nconst")
-      .select("originalTitle","primaryName","birthYear")
+      .select("*")
       .writeStream
+
       .outputMode("append")
-      .format("console")
+      .format("csv")
+      //.format("console")
+      .option("path","/home/vinicius/IdeaProjects/sparkExercises/src/resources/output")
+        .option("header","true")
+
+      .option("checkpointLocation",
+        "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoint")
       .start
 
     query.awaitTermination()
   }
 
-  def startSchemas(){
-
-    val titleBasicSchema = StructType(
-      Array(
-        StructField("tconst", StringType),
-        StructField("titleType", StringType),
-        StructField("primaryTitle", StringType),
-        StructField("originalTitle", StringType),
-        StructField("isAdult", IntegerType),
-        StructField("startYear", IntegerType),
-        StructField("endYear", StringType),
-        StructField("runtimeMinutes", StringType),
-        StructField("genres",StringType)
-      ))
-
-    val titlePrincipalSchema = StructType(
-      Array(
-        StructField("tconst", StringType),
-        StructField("ordering", IntegerType),
-        StructField("nconst", StringType),
-        StructField("category", StringType),
-        StructField("job", StringType),
-        StructField("characters", StringType)
-      ))
-
-    val  actorSchema = StructType(
-      Array(
-        StructField("nconst", StringType),
-        StructField("primaryName", StringType),
-        StructField("birthYear", IntegerType),
-        StructField("deathYear", IntegerType),
-        StructField("primaryProfession", StringType),
-        StructField("knownForTitles", StringType)
-      ))
-
-    List(titleBasicSchema, titlePrincipalSchema, actorSchema)
-  }
 }
