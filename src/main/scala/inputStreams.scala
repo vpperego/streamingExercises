@@ -2,7 +2,11 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object inputStreams {
 
-  var spark: SparkSession= _;
+  val spark: SparkSession= SparkSession
+    .builder
+    .master("local[*]")
+    .appName("StructuredNetworkWordCount")
+    .getOrCreate()
 
    var titleStream:DataFrame = _  ;
   var artistTitleStream:DataFrame = _  ;
@@ -11,11 +15,11 @@ object inputStreams {
   //  ,artistTitleStream,actorStream;
 
     def startStreams(): Unit ={
-      spark = SparkSession
-        .builder
-        .master("local[*]")
-        .appName("StructuredNetworkWordCount")
-        .getOrCreate()
+//      spark = SparkSession
+//        .builder
+//        .master("local[*]")
+//        .appName("StructuredNetworkWordCount")
+//        .getOrCreate()
 
 
       titleStream = spark

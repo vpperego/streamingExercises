@@ -18,4 +18,4 @@ sbt package
 
 #spark-submit --class=imdbJoin target/scala-2.11/streamingscala_2.11-0.1.jar &
 #sleep 20
-spark-submit --class=producerStreaming target/scala-2.11/streamingscala_2.11-0.1.jar
+spark-submit --class=producerStreaming --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.2.0 target/scala-2.11/streamingscala_2.11-0.1.jar

@@ -2,16 +2,16 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.execution.streaming.FileStreamSource.Timestamp
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import inputStreams.spark
 
-object consumerStreaming{
-  def run(){
-    val spark: SparkSession = SparkSession
-      .builder
-      .master("local[*]")
-      .appName("StructuredNetworkWordCount")
-      .getOrCreate();
+object consumerStreaming extends App {
+  println("consumerStreaming")
 
-    import spark.implicits._;
+//
+//  val sparkSession: SparkSession  = _ ;
+//  import sparkSession.implicits._
+  import inputStreams.spark.implicits._
+
 
 
     val mySchema = StructType(Array(
@@ -42,5 +42,4 @@ object consumerStreaming{
       .start()
       .awaitTermination()
 
-  }
 }

@@ -9,75 +9,29 @@ import org.apache.spark.sql.types._
   *   -title.principals.tsv.gz
   *   -name.basics.tsv.gz
   */
-object imdbJoin {
+object imdbJoin extends App{
 
-  def run() {
-    val titleSchema = StructType(
-        Array(
-          StructField("tconst", StringType),
-          StructField("primaryTitle", StringType),
-          StructField("startYear", StringType),
-          StructField("endYear", StringType)
-        ))
+  inputStreams.startStreams()
 
-      val artistTitleSchema = StructType(
-        Array(
-          StructField("nconst", StringType),
-          StructField("tconst", StringType)
-        ))
+  val query = inputStreams.titleStream
+    .join(inputStreams.artistTitleStream,"tconst")
+    .join(inputStreams.actorStream,"nconst")
+    .select("*")
+    .writeStream
 
-      val  artistSchema = StructType(
-        Array(
-          StructField("nconst", StringType),
-          StructField("primaryName", StringType),
-          StructField("birthYear", StringType),
-          StructField("deathYear", StringType)
-        ))
-    val spark = SparkSession
-      .builder
-      .master("local[*]")
-      .appName("StructuredNetworkWordCount")
-      .getOrCreate()
+//    .outputMode("append")
+//    .format("csv")
+//    .option("path","/home/vinicius/IdeaProjects/sparkExercises/src/resources/output")
+//    .option("header","true")
+//
+//    .option("checkpointLocation",
+//      "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoint")
+    .format("kafka")
+    .option("topic", "imdb_output")
+    .option("kafka.bootstrap.servers", "localhost:9092")
+//    .option("checkpointLocation", "/sparkExercises/src/checkpoint")
+    .start
 
-     val titleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t").schema(titleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles_small" )
-
-    val artistTitleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(artistTitleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title_small" )
-
-    val actorStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(artistSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists_small" )
-
-//    actorStream.select("fooBar").map(_.
-
-    val query = titleStream
-      .join(artistTitleStream,"tconst")
-      .join(actorStream,"nconst")
-      .select("*")
-      .writeStream
-
-      .outputMode("append")
-      .format("csv")
-      //.format("console")
-      .option("path","/home/vinicius/IdeaProjects/sparkExercises/src/resources/output")
-        .option("header","true")
-
-      .option("checkpointLocation",
-        "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoint")
-      .start
-
-    query.awaitTermination()
-  }
+  query.awaitTermination()
 
 }
