@@ -1,6 +1,4 @@
-import org.apache.spark.sql.SparkSession
 
-import org.apache.spark.sql.types._
 
 
 
@@ -9,7 +7,7 @@ import org.apache.spark.sql.types._
 
  */
 object producerStreaming extends App {
-   inputStreams.startStreams()
+  inputStreams.startStreams()
 
   inputStreams.actorStream.selectExpr("to_json(struct(*)) AS value").
     writeStream
@@ -20,7 +18,7 @@ object producerStreaming extends App {
     .start()
     .awaitTermination(10000)
 
-   inputStreams.titleStream.selectExpr("to_json(struct(*)) AS value").
+  inputStreams.titleStream.selectExpr("to_json(struct(*)) AS value").
     writeStream
     .format("kafka")
     .option("topic", "titles")
@@ -29,7 +27,7 @@ object producerStreaming extends App {
     .start()
     .awaitTermination(10000)
 
-    inputStreams.artistTitleStream.selectExpr( "to_json(struct(*)) AS value").
+  inputStreams.artistTitleStream.selectExpr( "to_json(struct(*)) AS value").
     writeStream
     .format("kafka")
     .option("topic", "actors_titles")
