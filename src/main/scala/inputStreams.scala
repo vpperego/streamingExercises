@@ -12,15 +12,11 @@ object inputStreams {
   var artistTitleStream:DataFrame = _  ;
   var actorStream:DataFrame = _  ;
 
-  //  ,artistTitleStream,actorStream;
+  var titleKafkaStream:DataFrame = _  ;
+  var artistTitleKafkaStream:DataFrame = _  ;
+  var actorKafkaStream:DataFrame = _  ;
 
     def startStreams(): Unit ={
-//      spark = SparkSession
-//        .builder
-//        .master("local[*]")
-//        .appName("StructuredNetworkWordCount")
-//        .getOrCreate()
-
 
       titleStream = spark
         .readStream
@@ -43,4 +39,40 @@ object inputStreams {
         .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists_small" )
 
     }
+
+    def startKafkaStreams(): Unit ={
+
+
+      titleKafkaStream = spark
+        .readStream
+           .format("kafka")
+            .option("failOnDataLoss","false")
+
+            .option("kafka.bootstrap.servers", "localhost:9092")
+           .option("subscribe", "titles")
+           .option("startingOffsets", "earliest")
+
+           .load()
+
+      artistTitleKafkaStream = spark
+        .readStream
+        .option("failOnDataLoss","false")
+        .format("kafka")
+        .option("kafka.bootstrap.servers", "localhost:9092")
+        .option("subscribe", "actors_titles")
+        .option("startingOffsets", "earliest")
+
+        .load()
+
+      actorKafkaStream = spark
+        .readStream
+        .format("kafka")
+        .option("failOnDataLoss","false")
+        .option("kafka.bootstrap.servers", "localhost:9092")
+        .option("subscribe", "actors")
+        .option("startingOffsets", "earliest")
+
+        .load()
+    }
+
 }

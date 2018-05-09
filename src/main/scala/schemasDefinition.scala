@@ -6,7 +6,7 @@ object schemasDefinition {
     Array(
       StructField("tconst", StringType),
       StructField("primaryTitle", StringType),
-      StructField("startYear", StringType),
+      StructField("originalTitle", StringType),
       StructField("endYear", StringType)
     ))
 
