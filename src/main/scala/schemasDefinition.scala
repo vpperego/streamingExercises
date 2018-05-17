@@ -10,13 +10,13 @@ object schemasDefinition {
       StructField("endYear", StringType)
     ))
 
-  val artistTitleSchema = StructType(
+  val actorTitleSchema = StructType(
     Array(
       StructField("nconst", StringType),
       StructField("tconst", StringType)
     ))
 
-  val  artistSchema = StructType(
+  val  actorSchema = StructType(
     Array(
       StructField("nconst", StringType),
       StructField("primaryName", StringType),

@@ -16,7 +16,7 @@ object producerStreaming extends App {
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors")
     .start()
-    .awaitTermination(10000)
+    .awaitTermination(5000)
 
   inputStreams.titleStream.selectExpr("to_json(struct(*)) AS value").
     writeStream
@@ -25,14 +25,14 @@ object producerStreaming extends App {
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/titles")
     .start()
-    .awaitTermination(10000)
+    .awaitTermination(5000)
 
-  inputStreams.artistTitleStream.selectExpr( "to_json(struct(*)) AS value").
+  inputStreams.actorsTitleStream.selectExpr( "to_json(struct(*)) AS value").
     writeStream
     .format("kafka")
     .option("topic", "actors_titles")
     .option("kafka.bootstrap.servers", "localhost:9092")
     .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors_titles")
     .start()
-    .awaitTermination(10000)
+    .awaitTermination(5000)
 }

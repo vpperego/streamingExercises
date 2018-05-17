@@ -9,34 +9,35 @@ object inputStreams {
     .getOrCreate()
 
   var titleStream:DataFrame = _  ;
-  var artistTitleStream:DataFrame = _  ;
+  var actorsTitleStream:DataFrame = _  ;
   var actorStream:DataFrame = _  ;
 
   var titleKafkaStream:DataFrame = _  ;
-  var artistTitleKafkaStream:DataFrame = _  ;
+  var actorsTitleKafkaStream:DataFrame = _  ;
   var actorKafkaStream:DataFrame = _  ;
 
   def startStreams(): Unit ={
-
-    titleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t").schema(schemasDefinition.titleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles_small" )
-
-    artistTitleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(schemasDefinition.artistTitleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title_small" )
 
     actorStream = spark
       .readStream
       .option("header","true")
       .option("sep", "\t")
-      .schema(schemasDefinition.artistSchema)
+      .schema(schemasDefinition.actorSchema)
       .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists_small" )
+
+    titleStream = spark
+      .readStream
+      .option("header","true")
+      .option("sep", "\t")
+      .schema(schemasDefinition.titleSchema)
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles_small" )
+
+    actorsTitleStream = spark
+      .readStream
+      .option("header","true")
+      .option("sep", "\t")
+      .schema(schemasDefinition.actorTitleSchema)
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title_small" )
 
   }
 
@@ -54,7 +55,7 @@ object inputStreams {
 
       .load()
 
-    artistTitleKafkaStream = spark
+    actorsTitleKafkaStream = spark
       .readStream
       .option("failOnDataLoss","false")
       .format("kafka")

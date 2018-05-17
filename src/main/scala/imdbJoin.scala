@@ -20,10 +20,10 @@ object imdbJoin extends App{
       .select(from_json($"value", schemasDefinition.titleSchema).as("bar"))
       .select("bar.*")
       .join(
-        inputStreams.artistTitleKafkaStream
+        inputStreams.actorsTitleKafkaStream
           .selectExpr("CAST(value AS STRING)")
           .as[String]
-          .select(from_json($"value", schemasDefinition.artistTitleSchema).as("bar2"))
+          .select(from_json($"value", schemasDefinition.actorTitleSchema).as("bar2"))
           .select("bar2.*")
         //      right
         ,"tconst")
@@ -31,7 +31,7 @@ object imdbJoin extends App{
         inputStreams.actorKafkaStream
           .selectExpr("CAST(value AS STRING)")
           .as[String]
-          .select(from_json($"value", schemasDefinition.artistSchema).as("bar3"))
+          .select(from_json($"value", schemasDefinition.actorSchema).as("bar3"))
           .select("bar3.*")
         ,"nconst")
       .selectExpr( "to_json(struct(*)) AS value")
@@ -43,6 +43,6 @@ object imdbJoin extends App{
       .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/imdbJoin")
       .start
 
-  query.awaitTermination()
+  query.awaitTermination(10000)
 
 }
