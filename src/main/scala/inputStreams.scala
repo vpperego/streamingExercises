@@ -23,21 +23,21 @@ object inputStreams {
       .option("header","true")
       .option("sep", "\t")
       .schema(schemasDefinition.actorSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists_small" )
+      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
 
-    titleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(schemasDefinition.titleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles_small" )
+   titleStream = spark
+     .readStream
+     .option("header","true")
+     .option("sep", "\t")
+     .schema(schemasDefinition.titleSchema)
+     .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
 
-    actorsTitleStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(schemasDefinition.actorTitleSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title_small" )
+   actorsTitleStream = spark
+     .readStream
+     .option("header","true")
+     .option("sep", "\t")
+     .schema(schemasDefinition.actorTitleSchema)
+     .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
 
   }
 

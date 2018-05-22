@@ -9,7 +9,6 @@ object schemasDefinition {
       StructField("originalTitle", StringType),
       StructField("endYear", StringType)
     ))
-
   val actorTitleSchema = StructType(
     Array(
       StructField("nconst", StringType),
@@ -22,5 +21,7 @@ object schemasDefinition {
       StructField("primaryName", StringType),
       StructField("birthYear", StringType),
       StructField("deathYear", StringType)
+      // StructField("primaryProfession", StringType),
+      //   StructField("knownForTitles", StringType)
     ))
 }
