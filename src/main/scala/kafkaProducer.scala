@@ -14,7 +14,7 @@
 //  }
 //  val events = 20
 ////  val topic = args(2)
-//  val brokers = "localhost:9092"
+//  val brokers = kafkaAddress
 //  val rnd = new Random()
 //  val props = new Properties()
 //  props.put("bootstrap.servers", brokers)

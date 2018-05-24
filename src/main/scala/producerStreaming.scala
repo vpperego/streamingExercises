@@ -16,8 +16,8 @@ object producerStreaming extends App {
     .option("topic", "actors")
 //    .option("failOnDataLoss","false")
 //  .option("startingOffsets", "latest")
-    .option("kafka.bootstrap.servers", "localhost:9092")
-    .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors")
+    .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
+    .option("checkpointLocation", "file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors")
     .start()
 
   q1.awaitTermination(45000)
@@ -28,8 +28,8 @@ object producerStreaming extends App {
    .option("topic", "titles")
    .option("failOnDataLoss","false")
 //    .option("startingOffsets", "latest")
-   .option("kafka.bootstrap.servers", "localhost:9092")
-   .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/titles")
+   .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
+   .option("checkpointLocation", "file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/titles")
    .start()
 
 
@@ -41,8 +41,8 @@ object producerStreaming extends App {
    .option("topic", "actors_titles")
    .option("failOnDataLoss","false")
 //    .option("startingOffsets", "latest")
-   .option("kafka.bootstrap.servers", "localhost:9092")
-   .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors_titles")
+   .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
+   .option("checkpointLocation", "file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/actors_titles")
    .start()
 
  q3.awaitTermination(45000)

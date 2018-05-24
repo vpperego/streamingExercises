@@ -4,9 +4,12 @@ object inputStreams {
 
   val spark: SparkSession= SparkSession
     .builder
-    .master("local[*]")
-    .appName("StructuredNetworkWordCount")
+
+      // .master("local[*]")
+    .appName("IMDB - join")
     .getOrCreate()
+// 192.168.2.17
+  val kafkaAddress = "192.168.2.17:9092"
 
   var titleStream:DataFrame = _  ;
   var actorsTitleStream:DataFrame = _  ;
@@ -23,21 +26,21 @@ object inputStreams {
       .option("header","true")
       .option("sep", "\t")
       .schema(schemasDefinition.actorSchema)
-      .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
+      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
 
    titleStream = spark
      .readStream
      .option("header","true")
      .option("sep", "\t")
      .schema(schemasDefinition.titleSchema)
-     .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
+     .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
 
    actorsTitleStream = spark
      .readStream
      .option("header","true")
      .option("sep", "\t")
      .schema(schemasDefinition.actorTitleSchema)
-     .csv("/home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
+     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
 
   }
 
@@ -49,7 +52,7 @@ object inputStreams {
       .format("kafka")
       .option("failOnDataLoss","false")
 
-      .option("kafka.bootstrap.servers", "localhost:9092")
+      .option("kafka.bootstrap.servers", kafkaAddress)
       .option("subscribe", "titles")
       .option("startingOffsets", "earliest")
 
@@ -59,7 +62,7 @@ object inputStreams {
       .readStream
       .option("failOnDataLoss","false")
       .format("kafka")
-      .option("kafka.bootstrap.servers", "localhost:9092")
+      .option("kafka.bootstrap.servers", kafkaAddress)
       .option("subscribe", "actors_titles")
       .option("startingOffsets", "earliest")
 
@@ -69,7 +72,7 @@ object inputStreams {
       .readStream
       .format("kafka")
       .option("failOnDataLoss","false")
-      .option("kafka.bootstrap.servers", "localhost:9092")
+      .option("kafka.bootstrap.servers", kafkaAddress)
       .option("subscribe", "actors")
       .option("startingOffsets", "earliest")
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo " Artists - file"
 wc -l src/resources/artists/artist.tsv
 echo " Titles- file"
@@ -11,3 +12,5 @@ echo " Titles- kafka"
 kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic titles --time -1 --offsets 1
 echo " Artists.Titles- kafka"
 kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic actors_titles --time -1 --offsets 1
+echo " IMDB Output - kafka"
+kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic imdb_output --time -1 --offsets 1

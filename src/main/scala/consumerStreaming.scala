@@ -24,7 +24,7 @@ object consumerStreaming extends App {
   val df = spark
     .readStream
     .format("kafka")
-    .option("kafka.bootstrap.servers", "localhost:9092")
+    .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
     .option("subscribe", "movies")
     .option("startingOffsets", "earliest")
 

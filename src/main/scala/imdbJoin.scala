@@ -37,12 +37,13 @@ object imdbJoin extends App{
       .selectExpr( "to_json(struct(*)) AS value")
       .writeStream
       .format("kafka")
-      .option("failOnDataLoss","false")
+      // .option("failOnDataLoss","false")
       .option("topic", "imdb_output")
-      .option("kafka.bootstrap.servers", "localhost:9092")
-      .option("checkpointLocation", "/home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/imdbJoin")
+      .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
+      .option("checkpointLocation", "file:///tmp/ImdbJoinCheckpoint")
+      // .option("checkpointLocation", "hdfs://dbis-expsrv4.informatik.uni-kl.de:8020/")
       .start
 
-  query.awaitTermination(10000)
+  query.awaitTermination(40000)
 
 }
