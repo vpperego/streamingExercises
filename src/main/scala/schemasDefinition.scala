@@ -1,4 +1,4 @@
-import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 
 object schemasDefinition {
 
@@ -13,6 +13,14 @@ object schemasDefinition {
     Array(
       StructField("nconst", StringType),
       StructField("tconst", StringType)
+    ))
+
+  val ratingSchema = StructType(
+    Array(
+      StructField("tconst", StringType),
+      StructField("averageRating", StringType),
+      StructField("numVotes", StringType),
+      StructField("whatIsTime",StringType)
     ))
 
   val  actorSchema = StructType(

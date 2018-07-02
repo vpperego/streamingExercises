@@ -16,16 +16,17 @@ object imdbJoin extends App{
   val query =
     inputStreams.titleKafkaStream
       .selectExpr("CAST(value AS STRING)")
-      .as[String]
-      .select(from_json($"value", schemasDefinition.titleSchema).as("bar"))
-      .select("bar.*")
-      .join(
-        inputStreams.actorsTitleKafkaStream
+      .as[(String)]
+      .select(from_json($"value", schemasDefinition.titleSchema).as("data"))
+      .select("data.*")
+        .selectExpr("CAST(value AS STRING)").as[String].select(from_json($"value", schemasDefinition.titleSchema).as("data")).select("data.*")
+
+            .join(
+        inputStreams.ratingKafkaStream
           .selectExpr("CAST(value AS STRING)")
           .as[String]
-          .select(from_json($"value", schemasDefinition.actorTitleSchema).as("bar2"))
+          .select(from_json($"value", schemasDefinition.ratingSchema).as("bar2"))
           .select("bar2.*")
-        //      right
         ,"tconst")
       .join(
         inputStreams.actorKafkaStream
@@ -37,13 +38,13 @@ object imdbJoin extends App{
       .selectExpr( "to_json(struct(*)) AS value")
       .writeStream
       .format("kafka")
-      // .option("failOnDataLoss","false")
       .option("topic", "imdb_output")
       .option("kafka.bootstrap.servers", inputStreams.kafkaAddress)
-      .option("checkpointLocation", "file:///tmp/ImdbJoinCheckpoint")
+//      .option("checkpointLocation", "file:///tmp/ImdbJoinCheckpoint")
+      .option("checkpointLocation", "file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/checkpoints/ImdbJoinCheckpoint")
+
       // .option("checkpointLocation", "hdfs://dbis-expsrv4.informatik.uni-kl.de:8020/")
       .start
 
-  query.awaitTermination(40000)
-
+  query.awaitTermination()
 }
