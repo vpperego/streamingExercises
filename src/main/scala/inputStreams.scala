@@ -4,7 +4,6 @@ object inputStreams {
 
   val spark: SparkSession= SparkSession.builder.appName("IMDB - join").getOrCreate()
       // .master("local[*]")
-
 // 192.168.2.17
   val kafkaAddress = "localhost:9092"
 
@@ -13,6 +12,8 @@ object inputStreams {
   var actorStream:DataFrame = _  ;
   var ratingStream:DataFrame = _  ;
 
+  var gamesStream:DataFrame = _  ;
+  var idsStream:DataFrame = _  ;
 
   var titleKafkaStream:DataFrame = _  ;
   var actorsTitleKafkaStream:DataFrame = _  ;
@@ -21,13 +22,13 @@ object inputStreams {
 
   def startStreams(): Unit ={
 
-    actorStream = spark
-      .readStream
-      .option("header","true")
-      .option("sep", "\t")
-      .schema(schemasDefinition.actorSchema)
-      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
-
+//    actorStream = spark
+//      .readStream
+//      .option("header","true")
+//      .option("sep", "\t")
+//      .schema(schemasDefinition.actorSchema)
+//      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
+//
     ratingStream = spark
       .readStream
       .option("header","true")
@@ -41,27 +42,31 @@ object inputStreams {
       .option("sep", "\t")
       .schema(schemasDefinition.titleSchema)
       .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
-
-   actorsTitleStream = spark
-     .readStream
-     .option("header","true")
-     .option("sep", "\t")
-     .schema(schemasDefinition.actorTitleSchema)
-     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
+//
+//   actorsTitleStream = spark
+//     .readStream
+//     .option("header","true")
+//     .option("sep", "\t")
+//     .schema(schemasDefinition.actorTitleSchema)
+//     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
 
   }
 
   def startKafkaStreams(): Unit ={
 
 
-    // titleKafkaStream = spark
-    //   .readStream
-    //   .format("kafka")
-    //   .option("failOnDataLoss","false")
-    //   .option("kafka.bootstrap.servers", kafkaAddress)
-    //   .option("subscribe", "titles")
-    //   .option("startingOffsets", "earliest")
-    //   .load()
+    titleKafkaStream = spark
+      .readStream
+      .format("kafka")
+      .option("failOnDataLoss","false")
+      .option("kafka.bootstrap.servers", kafkaAddress)
+      .option("subscribe", "titles")
+      .option("startingOffsets", "earliest")
+      .load()
+
+
+//      .selectExpr("CAST(value AS STRING)")
+//      .as[(String)]
 
     ratingKafkaStream = spark
       .readStream
@@ -71,6 +76,11 @@ object inputStreams {
       .option("subscribe", "ratings")
       .option("startingOffsets", "earliest")
       .load()
+
+
+
+//      .selectExpr("CAST(value AS STRING)")
+//      .as[(String)]
 
 //    actorsTitleKafkaStream = spark
 //      .readStream
