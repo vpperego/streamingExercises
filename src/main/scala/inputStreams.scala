@@ -2,7 +2,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object inputStreams {
 
-  val spark: SparkSession= SparkSession.builder.appName("IMDB - join").getOrCreate()
+  val spark: SparkSession= SparkSession.builder.appName("file join").getOrCreate()
       // .master("local[*]")
 // 192.168.2.17
   val kafkaAddress = "localhost:9092"
@@ -41,8 +41,10 @@ object inputStreams {
       .option("header","true")
       .option("sep", "\t")
       .schema(schemasDefinition.titleSchema)
+//      .option("includeTimestamp", "true")
       .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
-//
+
+    //
 //   actorsTitleStream = spark
 //     .readStream
 //     .option("header","true")
@@ -52,6 +54,25 @@ object inputStreams {
 
   }
 
+  def startJoinStreams(): Unit = {
+    titleKafkaStream = spark
+      .readStream
+      .format("kafka")
+      .option("failOnDataLoss","false")
+      .option("kafka.bootstrap.servers", kafkaAddress)
+      .option("subscribe", "titles")
+      .option("startingOffsets", "earliest")
+      .load()
+
+    ratingKafkaStream = spark
+      .readStream
+      .format("kafka")
+      .option("failOnDataLoss","false")
+      .option("kafka.bootstrap.servers", kafkaAddress)
+      .option("subscribe", "ratings")
+      .option("startingOffsets", "earliest")
+      .load()
+  }
   def startKafkaStreams(): Unit ={
 
 
@@ -65,9 +86,6 @@ object inputStreams {
       .load()
 
 
-//      .selectExpr("CAST(value AS STRING)")
-//      .as[(String)]
-
     ratingKafkaStream = spark
       .readStream
       .format("kafka")
@@ -76,11 +94,6 @@ object inputStreams {
       .option("subscribe", "ratings")
       .option("startingOffsets", "earliest")
       .load()
-
-
-
-//      .selectExpr("CAST(value AS STRING)")
-//      .as[(String)]
 
 //    actorsTitleKafkaStream = spark
 //      .readStream
@@ -91,14 +104,14 @@ object inputStreams {
 //      .option("startingOffsets", "earliest")
 //      .load()
 //
-//    actorKafkaStream = spark
-//      .readStream
-//      .format("kafka")
-//      .option("failOnDataLoss","false")
-//      .option("kafka.bootstrap.servers", kafkaAddress)
-//      .option("subscribe", "actors")
-//      .option("startingOffsets", "earliest")
-//      .load()
+    actorKafkaStream = spark
+      .readStream
+      .format("kafka")
+      .option("failOnDataLoss","false")
+      .option("kafka.bootstrap.servers", kafkaAddress)
+      .option("subscribe", "actors")
+      .option("startingOffsets", "earliest")
+      .load()
   }
 
 }

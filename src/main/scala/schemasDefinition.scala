@@ -21,13 +21,13 @@ object schemasDefinition {
       StructField("numVotes", StringType)
     ))
 
-//  val  actorSchema = StructType(
-//    Array(
-//      StructField("nconst", IntegerType),
-//      StructField("primaryName", StringType),
-//      StructField("birthYear", StringType),
-//      StructField("deathYear", StringType)
-//      // StructField("primaryProfession", StringType),
-//      //   StructField("knownForTitles", StringType)
-//    ))
+  val  actorSchema = StructType(
+    Array(
+      StructField("nconst", IntegerType),
+      StructField("primaryName", StringType),
+      StructField("birthYear", StringType),
+      StructField("deathYear", StringType)
+      // StructField("primaryProfession", StringType),
+      //   StructField("knownForTitles", StringType)
+    ))
 }
