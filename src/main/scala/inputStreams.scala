@@ -22,17 +22,18 @@ object inputStreams {
 
   def startStreams(): Unit ={
 
-//    actorStream = spark
-//      .readStream
-//      .option("header","true")
-//      .option("sep", "\t")
-//      .schema(schemasDefinition.actorSchema)
-//      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
+    actorStream = spark
+      .readStream
+      .option("header","true").option("sep", "\t")
+      .schema(schemasDefinition.actorSchema)
+      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
 //
+
     ratingStream = spark
       .readStream
       .option("header","true")
       .option("sep", "\t")
+//      .option("rowsPerSecond",10) THIS IS NOR FOR FILE SOURCE, BUT FOR RATE SOURCE (CHECK STRUCTURED STREAMING PROGRAMMING GUIDE)
       .schema(schemasDefinition.ratingSchema)
       .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/ratings")
 
@@ -42,15 +43,18 @@ object inputStreams {
       .option("sep", "\t")
       .schema(schemasDefinition.titleSchema)
 //      .option("includeTimestamp", "true")
-      .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
+//      .csv("file:////home/vinicius/IdeaProjects/sparkExercises/src/resources/titles" )
+      .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
 
     //
-//   actorsTitleStream = spark
-//     .readStream
-//     .option("header","true")
-//     .option("sep", "\t")
-//     .schema(schemasDefinition.actorTitleSchema)
-//     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
+   actorsTitleStream = spark
+     .readStream
+     .option("header","true")
+     .option("sep", "\t")
+     .schema(schemasDefinition.actorTitleSchema)
+     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artists" )
+
+    //     .csv("file:///home/vinicius/IdeaProjects/sparkExercises/src/resources/artist.title" )
 
   }
 
