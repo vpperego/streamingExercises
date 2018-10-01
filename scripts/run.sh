@@ -25,7 +25,9 @@ rm -fr output2
 
 
 #spark-submit --master local[*] --class=producerStreaming --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 target/scala-2.11/streamingscala_2.11-0.1.jar
-spark-submit  --properties-file /usr/local/spark/conf/spark-defaults.conf --master local[*] --class=consumerStreaming --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 target/scala-2.11/streamingscala_2.11-0.1.jar
+#spark-submit  --properties-file /usr/local/spark/conf/spark-defaults.conf --master local[*] --class=$1 --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 target/scala-2.11/streamingscala_2.11-0.1.jar
+
+spark-submit  --properties-file /usr/local/spark/conf/spark-defaults.conf --master local[*] --class="$1" target/scala-2.11/streamingscala_2.11-0.1.jar
 
 #sleep 5Q
 # spark-submit --master local[*] --class=imdbJoin --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 target/scala-2.11/streamingscala_2.11-0.1.jar
